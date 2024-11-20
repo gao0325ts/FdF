@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 21:22:06 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/15 16:19:48 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/20 21:54:41 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 
 char	*get_next_line(int fd);
 char	*join_string(char *s1, char *s2);
-char	*ft_strdup(char *s);
-size_t	ft_strlen(char *s);
+char	*ft_strdup(const char *s);
+size_t	ft_strlen(const char *s);
 char	*ft_strchr(const char *s, int c);
 
 #endif
