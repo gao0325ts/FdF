@@ -7,7 +7,9 @@ RM = rm -f
 LIBFT_DIR = ./libft
 GNL_DIR = ./get_next_line
 
-SRCS = $(wildcard $(LIBFT_DIR)/*.c $(GNL_DIR)/*.c)
+SRCS = $(wildcard $(LIBFT_DIR)/*.c) \
+		$(GNL_DIR)/get_next_line.c \
+		$(GNL_DIR)/get_next_line_utils.c
 OBJS = $(SRCS:.c=.o)
 INCLUDES = ./includes
 
