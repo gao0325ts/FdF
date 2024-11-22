@@ -1,0 +1,13 @@
+*
+
+!Makefile
+!lib/
+!lib/*/
+!lib/*/*/
+!lib/includes/*.h
+!lib/get_next_line/*.c
+!lib/libft/*.c
+!includes/
+!includes/*.h
+!srcs/
+!srcs/*.c
