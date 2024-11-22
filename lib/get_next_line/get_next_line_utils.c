@@ -6,55 +6,11 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:57:05 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/20 21:54:55 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/22 18:20:03 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-char	*ft_strchr(const char *s, int c)
-{
-	size_t	i;
-
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == (char)c)
-			return ((char *)&s[i]);
-		i++;
-	}
-	if ((char)c == '\0')
-		return ((char *)&s[i]);
-	return (NULL);
-}
-
-size_t	ft_strlen(const char *s)
-{
-	size_t	len;
-
-	len = 0;
-	while (s[len])
-		len++;
-	return (len);
-}
-
-char	*ft_strdup(const char *s)
-{
-	char	*new;
-	size_t	i;
-
-	new = (char *)malloc(sizeof(char) * (ft_strlen(s) + 1));
-	if (!new)
-		return (NULL);
-	i = 0;
-	while (s[i])
-	{
-		new[i] = s[i];
-		i++;
-	}
-	new[i] = '\0';
-	return (new);
-}
 
 char	*join_string(char *s1, char *s2)
 {
