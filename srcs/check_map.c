@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 18:02:28 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/22 19:29:13 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/26 16:51:14 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	get_max_x(char *line, int *max_x, int is_first_line)
 
 	strs = ft_split(line, ' ');
 	i = 0;
-	while (strs[i])
+	while (strs[i] && strs[i][0] != '\n')
 		i++;
 	if (i == 0 || (!is_first_line && *max_x != i))
 	{
