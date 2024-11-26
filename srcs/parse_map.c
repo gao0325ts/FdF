@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:52:28 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/22 19:27:11 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/26 17:40:54 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,9 @@ void	set_vertex_value(t_vertex *point, char *line, int y, int max_x)
 		point[i].y = y;
 		point[i].z = str_to_double(strs[i]);
 		point[i].color = parse_color(strs[i]);
+		point[i].vx = 0;
+		point[i].vy = 0;
+		point[i].vz = 0;
 		i++;
 	}
 	free_split(strs);
