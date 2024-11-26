@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 18:02:28 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/26 18:16:06 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/26 19:52:02 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	get_max_value(int fd, int *max_x, int *max_y)
 	if (is_first_line)
 	{
 		perror("Empty file");
-		exit(1);
+		return ;
 	}
 }
 
@@ -62,8 +62,8 @@ void	get_max_x(char *line, int *max_x, int is_first_line)
 		i++;
 	if (i == 0 || (!is_first_line && *max_x != i))
 	{
-		free_split(strs);
 		perror("Invalid line length");
+		free_split(strs);
 		exit(1);
 	}
 	*max_x = i;

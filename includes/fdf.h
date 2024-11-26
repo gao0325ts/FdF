@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 19:07:05 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/22 21:47:04 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/26 19:55:05 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ uint32_t	hex_string_to_int(char *s);
 
 // free.c
 void	free_split(char **strs);
+void	free_map(t_vertex **map, int index);
 
 // str_to_double.c
 double	str_to_double(char *str);

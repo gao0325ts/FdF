@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 19:06:22 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/22 19:30:53 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/26 19:52:25 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ int main(int ac, char **av)
 	}
 	check_map(av[1], &env.max_x, &env.max_y);
 	map = parse_map(av[1], env.max_x, env.max_y);
+	if (!map)
+		return (1);
 	fdf(&env, map);
 	return (0);
 }

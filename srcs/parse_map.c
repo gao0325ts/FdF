@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:52:28 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/26 18:16:21 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/26 19:53:36 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,11 @@ t_vertex	**parse_map(char *filename, int max_x, int max_y)
 			break ;
 		map[i] = (t_vertex *)malloc(sizeof(t_vertex) * max_x);
 		if (!map[i])
+		{
+			free_map(map, i);
+			close(fd);
 			return (NULL);
+		}
 		set_vertex_value(map[i], line, i, max_x);
 		free(line);
 		i++;
@@ -51,7 +55,7 @@ void	set_vertex_value(t_vertex *point, char *line, int y, int max_x)
 	{
 		point[i].x = i;
 		point[i].y = y;
-		point[i].z = str_to_double(strs[i]);
+		point[i].z = ft_atoi(strs[i]);
 		point[i].color = parse_color(strs[i]);
 		point[i].vx = 0;
 		point[i].vy = 0;
@@ -84,6 +88,8 @@ uint32_t	char_to_digit(char c)
 		return (c - '0');
 	else if (c >= 'a' && c <= 'f')
 		return (c - 'a' + 10);
+	else if (c >= 'A' && c <= 'F')
+		return (c - 'A' + 10);
 	else
 	{
 		perror("Invalid color");
