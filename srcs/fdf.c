@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:47:11 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/26 18:13:41 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/26 18:19:10 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ void set_v_coordinates(t_vertex **map, int max_x, int max_y)
 	int j;
 
 	i = 0;
-	while (i < max_x)
+	while (i < max_y)
 	{
 		j = 0;
-		while (j < max_y)
+		while (j < max_x)
 		{
 			map[i][j].vx = map[i][j].x * (1.0 / sqrt(2)) + map[i][j].y * (1.0 / sqrt(2));
 			map[i][j].vy = map[i][j].x * (1.0 / sqrt(6)) - map[i][j].y * (1.0 / sqrt(6)) + map[i][j].z * (2.0 / sqrt(6));
@@ -88,15 +88,15 @@ void	render(t_vars *env, t_vertex **map)
 	int j;
 
 	i = 0;
-	while (i < env->max_x)
+	while (i < env->max_y)
 	{
 		j = 0;
-		while (j < env->max_y)
+		while (j < env->max_x)
 		{
 			my_mlx_pixel_put(env, map[i][j].vx, map[i][j].vy, map[i][j].color);
-			if (i + 1 < env->max_x)
+			if (i + 1 < env->max_y)
 				draw_line_dda(env, map[i][j], map[i + 1][j]);
-			if (j + 1 < env->max_y)
+			if (j + 1 < env->max_x)
 				draw_line_dda(env, map[i][j], map[i][j + 1]);
 			j++;
 		}
@@ -111,9 +111,9 @@ void apply_zoom_and_center(t_vertex **map, int max_x, int max_y)
     double max_vy = map[0][0].vy;
     double min_vy = map[0][0].vy;
 
-    for (int i = 0; i < max_x; i++)
+    for (int i = 0; i < max_y; i++)
     {
-        for (int j = 0; j < max_y; j++)
+        for (int j = 0; j < max_x; j++)
         {
             if (map[i][j].vx > max_vx)
                 max_vx = map[i][j].vx;
@@ -141,9 +141,9 @@ void apply_zoom_and_center(t_vertex **map, int max_x, int max_y)
     else
         zoom_ratio = WIN_HEIGHT / range_y / 2;
 
-    for (int i = 0; i < max_x; i++)
+    for (int i = 0; i < max_y; i++)
     {
-        for (int j = 0; j < max_y; j++)
+        for (int j = 0; j < max_x; j++)
         {
             map[i][j].vx = (map[i][j].vx - center_x) * zoom_ratio + (WIN_WIDTH / 2.0);
             map[i][j].vy = (map[i][j].vy - center_y) * zoom_ratio + (WIN_HEIGHT / 2.0);
