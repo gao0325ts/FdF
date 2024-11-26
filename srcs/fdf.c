@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:47:11 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/26 18:19:10 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/26 18:26:56 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void set_v_coordinates(t_vertex **map, int max_x, int max_y)
 		while (j < max_x)
 		{
 			map[i][j].vx = map[i][j].x * (1.0 / sqrt(2)) + map[i][j].y * (1.0 / sqrt(2));
-			map[i][j].vy = map[i][j].x * (1.0 / sqrt(6)) - map[i][j].y * (1.0 / sqrt(6)) + map[i][j].z * (2.0 / sqrt(6));
+			map[i][j].vy = -map[i][j].x * (1.0 / sqrt(6)) + map[i][j].y * (1.0 / sqrt(6)) - map[i][j].z * (2.0 / sqrt(6));
 			map[i][j].vz = -(map[i][j].x * (1.0 / sqrt(3))) - map[i][j].y * (1.0 / sqrt(3)) + map[i][j].z * (1.0 / sqrt(3));
 			j++;
 		}
@@ -54,32 +54,49 @@ void set_v_coordinates(t_vertex **map, int max_x, int max_y)
 	}
 }
 
-void	draw_line_dda(t_vars *env, t_vertex p1, t_vertex p2)
+void draw_line_dda(t_vars *env, t_vertex p1, t_vertex p2)
 {
-	double dx = p2.vx - p1.vx;
+    double dx = p2.vx - p1.vx;
     double dy = p2.vy - p1.vy;
-	double x = p1.vx;
-	double y = p1.vy;
-	double steps;
-	int i;
+    double x = p1.vx;
+    double y = p1.vy;
+    double steps;
+    int i;
 
-	if (p1.vx == p2.vx && p1.vy == p2.vy)
-		return ;
-	if (fabs(dx) >= fabs(dy))
-		steps = fabs(dx);
-	else
-		steps = fabs(dy);
-	dx /= steps;
-	dy /= steps;
-	
-	i = 1;
-	while (i < steps)
-	{
-		my_mlx_pixel_put(env, (int)x, (int)y, 0XFFFFFF);
-		x += dx;
-		y += dy;
-		i++;
-	}
+    if (p1.vx == p2.vx && p1.vy == p2.vy)
+        return;
+
+    if (fabs(dx) >= fabs(dy))
+        steps = fabs(dx);
+    else
+        steps = fabs(dy);
+    
+    dx /= steps;
+    dy /= steps;
+
+    int start_color = p1.color;
+    int end_color = p2.color;
+
+    double r_step = ((end_color >> 16 & 0xFF) - (start_color >> 16 & 0xFF)) / steps;
+    double g_step = ((end_color >> 8 & 0xFF) - (start_color >> 8 & 0xFF)) / steps;
+    double b_step = ((end_color & 0xFF) - (start_color & 0xFF)) / steps;
+
+    double r = (start_color >> 16) & 0xFF;
+    double g = (start_color >> 8) & 0xFF;
+    double b = start_color & 0xFF;
+
+    i = 0;
+    while (i <= steps)
+    {
+        int current_color = ((int)r << 16) | ((int)g << 8) | (int)b;
+        my_mlx_pixel_put(env, (int)x, (int)y, current_color);
+        x += dx;
+        y += dy;
+        r += r_step;
+        g += g_step;
+        b += b_step;
+        i++;
+    }
 }
 
 void	render(t_vars *env, t_vertex **map)
