@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:47:11 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/26 19:55:26 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/27 17:16:57 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,93 +24,7 @@ int	close_window(int keycode, t_vars *env)
 	return (0);
 }
 
-void	my_mlx_pixel_put(t_vars *env, int x, int y, int color)
-{
-	char	*dst;
-
-	if (x >= 0 && x < WIN_WIDTH && y >= 0 && y < WIN_HEIGHT)
-	{
-		dst = env->addr + (y * env->line_size + x * (env->bpp / 8));
-		*(unsigned int *)dst = color;
-	}
-}
-
-void	set_v_coordinates(t_vertex **map, int max_x, int max_y)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (i < max_y)
-	{
-		j = 0;
-		while (j < max_x)
-		{
-			map[i][j].vx = map[i][j].x * (1.0 / sqrt(2)) + map[i][j].y * (1.0
-					/ sqrt(2));
-			map[i][j].vy = -map[i][j].x * (1.0 / sqrt(6)) + map[i][j].y * (1.0
-					/ sqrt(6)) - map[i][j].z * (2.0 / sqrt(6));
-			map[i][j].vz = -(map[i][j].x * (1.0 / sqrt(3))) - map[i][j].y * (1.0
-					/ sqrt(3)) + map[i][j].z * (1.0 / sqrt(3));
-			j++;
-		}
-		i++;
-	}
-}
-
-void	draw_line_dda(t_vars *env, t_vertex p1, t_vertex p2)
-{
-	double	dx;
-	double	dy;
-	double	x;
-	double	y;
-	double	steps;
-	int		i;
-	int		start_color;
-	int		end_color;
-	double	r_step;
-	double	g_step;
-	double	b_step;
-	double	r;
-	double	g;
-	double	b;
-	int		current_color;
-
-	dx = p2.vx - p1.vx;
-	dy = p2.vy - p1.vy;
-	x = p1.vx;
-	y = p1.vy;
-	if (p1.vx == p2.vx && p1.vy == p2.vy)
-		return ;
-	if (fabs(dx) >= fabs(dy))
-		steps = fabs(dx);
-	else
-		steps = fabs(dy);
-	dx /= steps;
-	dy /= steps;
-	start_color = p1.color;
-	end_color = p2.color;
-	r_step = ((end_color >> 16 & 0xFF) - (start_color >> 16 & 0xFF)) / steps;
-	g_step = ((end_color >> 8 & 0xFF) - (start_color >> 8 & 0xFF)) / steps;
-	b_step = ((end_color & 0xFF) - (start_color & 0xFF)) / steps;
-	r = (start_color >> 16) & 0xFF;
-	g = (start_color >> 8) & 0xFF;
-	b = start_color & 0xFF;
-	i = 0;
-	while (i <= steps)
-	{
-		current_color = ((int)r << 16) | ((int)g << 8) | (int)b;
-		my_mlx_pixel_put(env, (int)x, (int)y, current_color);
-		x += dx;
-		y += dy;
-		r += r_step;
-		g += g_step;
-		b += b_step;
-		i++;
-	}
-}
-
-void	render(t_vars *env, t_vertex **map)
+void	render(t_vars *env, t_point **map)
 {
 	int	i;
 	int	j;
@@ -132,60 +46,27 @@ void	render(t_vars *env, t_vertex **map)
 	}
 }
 
-void	apply_zoom_and_center(t_vertex **map, int max_x, int max_y)
+void	apply_zoom_and_center(t_point **map, int max_x, int max_y)
 {
-	double	max_vx;
-	double	min_vx;
-	double	max_vy;
-	double	min_vy;
-	double	range_x;
-	double	range_y;
-	double	center_x;
-	double	center_y;
-	double	zoom_ratio;
+	double		min_max[4];
+	t_transform	t;
 
-	max_vx = map[0][0].vx;
-	min_vx = map[0][0].vx;
-	max_vy = map[0][0].vy;
-	min_vy = map[0][0].vy;
-	for (int i = 0; i < max_y; i++)
-	{
-		for (int j = 0; j < max_x; j++)
-		{
-			if (map[i][j].vx > max_vx)
-				max_vx = map[i][j].vx;
-			if (map[i][j].vx < min_vx)
-				min_vx = map[i][j].vx;
-			if (map[i][j].vy > max_vy)
-				max_vy = map[i][j].vy;
-			if (map[i][j].vy < min_vy)
-				min_vy = map[i][j].vy;
-		}
-	}
-	range_x = max_vx - min_vx;
-	range_y = max_vy - min_vy;
-	if (range_x == 0 || range_y == 0)
+	min_max[0] = map[0][0].vx;
+	min_max[1] = map[0][0].vx;
+	min_max[2] = map[0][0].vy;
+	min_max[3] = map[0][0].vy;
+	find_min_max_vx_vy(map, max_x, max_y, min_max);
+	t.range_x = min_max[0] - min_max[1];
+	t.range_y = min_max[2] - min_max[3];
+	if (t.range_x == 0 || t.range_y == 0)
 		return ;
-	center_x = (max_vx + min_vx) / 2.0;
-	center_y = (max_vy + min_vy) / 2.0;
-	zoom_ratio = 1;
-	if (WIN_WIDTH / range_x < WIN_HEIGHT / range_y)
-		zoom_ratio = WIN_WIDTH / range_x / 1.1;
-	else
-		zoom_ratio = WIN_HEIGHT / range_y / 1.1;
-	for (int i = 0; i < max_y; i++)
-	{
-		for (int j = 0; j < max_x; j++)
-		{
-			map[i][j].vx = (map[i][j].vx - center_x) * zoom_ratio + (WIN_WIDTH
-					/ 2.0);
-			map[i][j].vy = (map[i][j].vy - center_y) * zoom_ratio + (WIN_HEIGHT
-					/ 2.0);
-		}
-	}
+	t.center_x = (min_max[0] + min_max[1]) / 2.0;
+	t.center_y = (min_max[2] + min_max[3]) / 2.0;
+	t.zoom_ratio = calculate_zoom_ratio(t.range_x, t.range_y);
+	apply_transform(map, max_x, max_y, t);
 }
 
-void	fdf(t_vars *env, t_vertex **map)
+void	fdf(t_vars *env, t_point **map)
 {
 	env->mlx = mlx_init();
 	env->win = mlx_new_window(env->mlx, WIN_WIDTH, WIN_HEIGHT, "FdF");

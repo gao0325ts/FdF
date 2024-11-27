@@ -6,20 +6,20 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:52:28 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/26 19:53:36 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/27 16:04:07 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-t_vertex	**parse_map(char *filename, int max_x, int max_y)
+t_point	**parse_map(char *filename, int max_x, int max_y)
 {
-	t_vertex	**map;
-	int			fd;
-	char		*line;
-	int			i;
+	t_point	**map;
+	int		fd;
+	char	*line;
+	int		i;
 
-	map = (t_vertex **)malloc(sizeof(t_vertex *) * max_y);
+	map = (t_point **)malloc(sizeof(t_point *) * max_y);
 	if (!map)
 		return (NULL);
 	fd = open(filename, O_RDONLY);
@@ -29,14 +29,10 @@ t_vertex	**parse_map(char *filename, int max_x, int max_y)
 		line = get_next_line(fd);
 		if (!line)
 			break ;
-		map[i] = (t_vertex *)malloc(sizeof(t_vertex) * max_x);
+		map[i] = (t_point *)malloc(sizeof(t_point) * max_x);
 		if (!map[i])
-		{
-			free_map(map, i);
-			close(fd);
 			return (NULL);
-		}
-		set_vertex_value(map[i], line, i, max_x);
+		set_point_value(map[i], line, i, max_x);
 		free(line);
 		i++;
 	}
@@ -44,7 +40,7 @@ t_vertex	**parse_map(char *filename, int max_x, int max_y)
 	return (map);
 }
 
-void	set_vertex_value(t_vertex *point, char *line, int y, int max_x)
+void	set_point_value(t_point *point, char *line, int y, int max_x)
 {
 	char	**strs;
 	int		i;

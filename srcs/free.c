@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 19:01:57 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/26 19:54:32 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/27 16:02:16 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	free_split(char **strs)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (strs[i])
@@ -25,9 +25,9 @@ void	free_split(char **strs)
 	free(strs);
 }
 
-void	free_map(t_vertex **map, int index)
+void	free_map(t_point **map, int index)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < index)

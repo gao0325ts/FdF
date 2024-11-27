@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 19:07:05 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/26 19:55:05 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/27 17:12:58 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct s_vars
 	int			max_y;
 }				t_vars;
 
-typedef struct s_vertex
+typedef struct s_point
 {
 	double		x;
 	double		y;
@@ -48,7 +48,34 @@ typedef struct s_vertex
 	double		vy;
 	double		vz;
 	uint32_t	color;
-}				t_vertex;
+}				t_point;
+
+typedef struct s_transform
+{
+	double range_x;
+	double range_y;
+	double center_x;
+	double center_y;
+	double zoom_ratio;
+}	t_transform;
+
+typedef struct s_color
+{
+	double r;
+	double g;
+	double b;
+	double r_step;
+	double g_step;
+	double b_step;
+}		t_color;
+
+typedef struct s_line
+{
+	double dx;
+	double dy;
+	double x;
+	double y;
+}		t_line;
 
 // check_map.c
 void	check_map(char *filename, int *max_x, int *max_y);
@@ -56,23 +83,32 @@ void	get_max_value(int fd, int *max_x, int *max_y);
 void	get_max_x(char *line, int *max_x, int is_first_line);
 
 // parse_map.c
-t_vertex		**parse_map(char *filename, int max_x, int max_y);
-void	set_vertex_value(t_vertex *point, char *line, int y, int max_x);
+t_point		**parse_map(char *filename, int max_x, int max_y);
+void	set_point_value(t_point *point, char *line, int y, int max_x);
 uint32_t	parse_color(char *s);
 uint32_t	char_to_digit(char c);
 uint32_t	hex_string_to_int(char *s);
 
 // free.c
 void	free_split(char **strs);
-void	free_map(t_vertex **map, int index);
-
-// str_to_double.c
-double	str_to_double(char *str);
-void	str_to_double_components(char *s, double *res, double *frac);
+void	free_map(t_point **map, int index);
 
 // fdf.c
-void	fdf(t_vars *env, t_vertex **map);
+void	fdf(t_vars *env, t_point **map);
 int	close_window(int keycode, t_vars *env);
+void	render(t_vars *env, t_point **map);
+void	apply_zoom_and_center(t_point **map, int max_x, int max_y);
+
+// drawing.c
 void	my_mlx_pixel_put(t_vars *env, int x, int y, int color);
+void	calculate_color(t_color *color, int start, int end, double steps);
+void	update_line_and_color(t_line *line, t_color *color);
+void	draw_line_dda(t_vars *env, t_point p1, t_point p2);
+
+// geometry.c
+void	set_v_coordinates(t_point **map, int max_x, int max_y);
+void	find_min_max_vx_vy(t_point **map, int max_x, int max_y, double *min_max);
+double	calculate_zoom_ratio(double range_x, double range_y);
+void	apply_transform(t_point **map, int max_x, int max_y, t_transform t);
 
 #endif
