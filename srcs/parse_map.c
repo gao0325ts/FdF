@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:52:28 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/27 16:04:07 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/28 22:58:12 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,29 +15,57 @@
 t_point	**parse_map(char *filename, int max_x, int max_y)
 {
 	t_point	**map;
-	int		fd;
-	char	*line;
+	char	**lines;
 	int		i;
 
+	lines = read_map_file(filename, max_y);
 	map = (t_point **)malloc(sizeof(t_point *) * max_y);
-	if (!map)
+	if (!lines || !map)
 		return (NULL);
-	fd = open(filename, O_RDONLY);
 	i = 0;
 	while (i < max_y)
 	{
-		line = get_next_line(fd);
-		if (!line)
-			break ;
 		map[i] = (t_point *)malloc(sizeof(t_point) * max_x);
 		if (!map[i])
+		{
+			free_split(lines);
+			free_map_partial(map, i);
 			return (NULL);
-		set_point_value(map[i], line, i, max_x);
-		free(line);
+		}
+		set_point_value(map[i], lines[i], i, max_x);
 		i++;
 	}
-	close(fd);
+	free_split(lines);
 	return (map);
+}
+
+char	**read_map_file(char *filename, int max_y)
+{
+	char	**lines;
+	int		fd;
+	int		i;
+
+	lines = (char **)malloc(sizeof(char *) * (max_y + 1));
+	if (!lines)
+		return (NULL);
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+	{
+		perror("");
+		free_split(lines);
+		exit(1);
+	}
+	i = 0;
+	while (i <= max_y)
+	{
+		lines[i] = get_next_line(fd);
+		if (!lines[i])
+			break ;
+		i++;
+	}
+	lines[i] = NULL;
+	close(fd);
+	return (lines);
 }
 
 void	set_point_value(t_point *point, char *line, int y, int max_x)
@@ -78,31 +106,23 @@ uint32_t	parse_color(char *s)
 	return (color);
 }
 
-uint32_t	char_to_digit(char c)
-{
-	if (c >= '0' && c <= '9')
-		return (c - '0');
-	else if (c >= 'a' && c <= 'f')
-		return (c - 'a' + 10);
-	else if (c >= 'A' && c <= 'F')
-		return (c - 'A' + 10);
-	else
-	{
-		perror("Invalid color");
-		exit(1);
-	}
-}
-
 uint32_t	hex_string_to_int(char *s)
 {
 	uint32_t	result;
+	uint32_t	digit;
 
 	result = 0;
 	if (s[0] == '0' && s[1] == 'x')
 		s += 2;
 	while (*s && *s != '\n')
 	{
-		result = (result << 4) | char_to_digit(*s);
+		if (*s >= '0' && *s <= '9')
+			digit = *s - '0';
+		else if (*s >= 'a' && *s <= 'f')
+			digit = *s - 'a' + 10;
+		else if (*s >= 'A' && *s <= 'F')
+			digit = *s - 'A' + 10;
+		result = (result << 4) | digit;
 		s++;
 	}
 	return (result);
