@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 19:07:05 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/29 11:26:19 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/29 12:35:39 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,13 @@ typedef struct s_point
 	uint32_t	color;
 }				t_point;
 
+typedef struct s_vector3
+{
+	double		x;
+	double		y;
+	double		z;
+}				t_vector3;
+
 typedef struct s_vars
 {
 	void		*mlx;
@@ -49,6 +56,14 @@ typedef struct s_vars
 	t_point		**map;
 	int			max_x;
 	int			max_y;
+	int is_mouse_pressed;     // マウスが押下中か
+	int prev_mouse_x;         // 前フレームのマウスX位置
+	int prev_mouse_y;         // 前フレームのマウスY位置
+	double camera_pitch;      // カメラの上下方向の回転
+	double camera_yaw;        // カメラの左右方向の回転
+	t_vector3 camera_forward; // カメラの前方向
+	t_vector3 camera_right;   // カメラの右方向
+	t_vector3 camera_up;      // カメラの上方向
 }				t_vars;
 
 typedef struct s_transform
@@ -100,11 +115,14 @@ void			free_map_partial(t_point **map, int index);
 
 // fdf.c
 void			fdf(t_vars *env);
-void			hook(t_vars *env);
-int				close_window_esc(int keycode, t_vars *env);
+int				handle_key(int keycode, t_vars *env);
+void			close_window_esc(t_vars *env);
 int				close_window_x(t_vars *env);
 void			render(t_vars *env, t_point **map);
-void			apply_zoom_and_center(t_point **map, int max_x, int max_y);
+void			init_position(t_point **map, int max_x, int max_y);
+void			apply_translation(t_vars *env, double offset_x,
+					double offset_y);
+void			apply_zoom(t_vars *env, double zoom_factor);
 
 // drawing.c
 void			my_mlx_pixel_put(t_vars *env, int x, int y, int color);

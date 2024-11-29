@@ -6,11 +6,80 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:47:11 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/29 11:24:55 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/29 12:35:28 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+
+void	apply_zoom(t_vars *env, double zoom_factor)
+{
+	double	center_x;
+	double	center_y;
+	int		i;
+	int		j;
+
+	center_x = WIN_WIDTH / 2.0;
+	center_y = WIN_HEIGHT / 2.0;
+	i = 0;
+	while (i < env->max_y)
+	{
+		j = 0;
+		while (j < env->max_x)
+		{
+			env->map[i][j].vx = (env->map[i][j].vx - center_x) * zoom_factor
+				+ center_x;
+			env->map[i][j].vy = (env->map[i][j].vy - center_y) * zoom_factor
+				+ center_y;
+			j++;
+		}
+		i++;
+	}
+}
+
+void	apply_translation(t_vars *env, double offset_x, double offset_y)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < env->max_y)
+	{
+		j = 0;
+		while (j < env->max_x)
+		{
+			env->map[i][j].vx += offset_x;
+			env->map[i][j].vy += offset_y;
+			j++;
+		}
+		i++;
+	}
+}
+
+int	handle_key(int keycode, t_vars *env)
+{
+	if (keycode == 122)
+		apply_zoom(env, 1.1);
+	else if (keycode == 120)
+		apply_zoom(env, 0.9);
+	else if (keycode == 97)
+		apply_translation(env, -10, 0);
+	else if (keycode == 100)
+		apply_translation(env, 10, 0);
+	else if (keycode == 119)
+		apply_translation(env, 0, -10);
+	else if (keycode == 115)
+		apply_translation(env, 0, 10);
+	else if (keycode == 65307)
+		close_window_esc(env);
+	else
+		return (0);
+	mlx_destroy_image(env->mlx, env->img);
+	env->img = mlx_new_image(env->mlx, WIN_WIDTH, WIN_HEIGHT);
+	render(env, env->map);
+	mlx_put_image_to_window(env->mlx, env->win, env->img, 0, 0);
+	return (0);
+}
 
 void	fdf(t_vars *env)
 {
@@ -20,20 +89,15 @@ void	fdf(t_vars *env)
 	env->addr = mlx_get_data_addr(env->img, &(env->bpp), &(env->line_size),
 			&(env->endian));
 	set_v_coordinates(env->map, env->max_x, env->max_y);
-	apply_zoom_and_center(env->map, env->max_x, env->max_y);
+	init_position(env->map, env->max_x, env->max_y);
 	render(env, env->map);
 	mlx_put_image_to_window(env->mlx, env->win, env->img, 0, 0);
-	hook(env);
+	mlx_hook(env->win, 2, 1L << 0, handle_key, env);
+	mlx_hook(env->win, 17, 1L << 5, close_window_x, env);
 	mlx_loop(env->mlx);
 }
 
-void	hook(t_vars *env)
-{
-	mlx_hook(env->win, 2, 1L << 0, close_window_esc, env);
-	mlx_hook(env->win, 17, 1L << 5, close_window_x, env);
-}
-
-void	apply_zoom_and_center(t_point **map, int max_x, int max_y)
+void	init_position(t_point **map, int max_x, int max_y)
 {
 	t_transform	t;
 
@@ -74,18 +138,14 @@ void	render(t_vars *env, t_point **map)
 	}
 }
 
-int	close_window_esc(int keycode, t_vars *env)
+void	close_window_esc(t_vars *env)
 {
-	if (keycode == 65307)
-	{
-		mlx_destroy_image(env->mlx, env->img);
-		mlx_destroy_window(env->mlx, env->win);
-		mlx_destroy_display(env->mlx);
-		free_map_partial(env->map, env->max_y);
-		free(env->mlx);
-		exit(0);
-	}
-	return (0);
+	mlx_destroy_image(env->mlx, env->img);
+	mlx_destroy_window(env->mlx, env->win);
+	mlx_destroy_display(env->mlx);
+	free_map_partial(env->map, env->max_y);
+	free(env->mlx);
+	exit(0);
 }
 
 int	close_window_x(t_vars *env)
