@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:47:11 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/28 22:51:39 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/29 11:24:55 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,27 +23,31 @@ void	fdf(t_vars *env)
 	apply_zoom_and_center(env->map, env->max_x, env->max_y);
 	render(env, env->map);
 	mlx_put_image_to_window(env->mlx, env->win, env->img, 0, 0);
+	hook(env);
+	mlx_loop(env->mlx);
+}
+
+void	hook(t_vars *env)
+{
 	mlx_hook(env->win, 2, 1L << 0, close_window_esc, env);
 	mlx_hook(env->win, 17, 1L << 5, close_window_x, env);
-	mlx_loop(env->mlx);
 }
 
 void	apply_zoom_and_center(t_point **map, int max_x, int max_y)
 {
-	double		min_max[4];
 	t_transform	t;
 
-	min_max[0] = map[0][0].vx;
-	min_max[1] = map[0][0].vx;
-	min_max[2] = map[0][0].vy;
-	min_max[3] = map[0][0].vy;
-	find_min_max_vx_vy(map, max_x, max_y, min_max);
-	t.range_x = min_max[0] - min_max[1];
-	t.range_y = min_max[2] - min_max[3];
+	t.max_vx = map[0][0].vx;
+	t.min_vx = map[0][0].vx;
+	t.max_vy = map[0][0].vy;
+	t.min_vy = map[0][0].vy;
+	find_min_max_vx_vy(map, max_x, max_y, &t);
+	t.range_x = t.max_vx - t.min_vx;
+	t.range_y = t.max_vy - t.min_vy;
 	if (t.range_x == 0 || t.range_y == 0)
 		return ;
-	t.center_x = (min_max[0] + min_max[1]) / 2.0;
-	t.center_y = (min_max[2] + min_max[3]) / 2.0;
+	t.center_x = (t.max_vx + t.min_vx) / 2.0;
+	t.center_y = (t.max_vy + t.min_vy) / 2.0;
 	t.zoom_ratio = calculate_zoom_ratio(t.range_x, t.range_y);
 	apply_transform(map, max_x, max_y, t);
 }

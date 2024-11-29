@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 19:07:05 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/28 22:53:17 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/29 11:26:19 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,10 @@ typedef struct s_vars
 
 typedef struct s_transform
 {
+	double		max_vx;
+	double		min_vx;
+	double		max_vy;
+	double		min_vy;
 	double		range_x;
 	double		range_y;
 	double		center_x;
@@ -80,7 +84,7 @@ typedef struct s_line
 
 // check_map.c
 void			check_map(char *filename, int *max_x, int *max_y);
-int			get_max_value(int fd, int *max_x, int *max_y);
+int				get_max_value(int fd, int *max_x, int *max_y);
 int				get_max_x(char *line, int *max_x, int is_first_line);
 
 // parse_map.c
@@ -96,6 +100,7 @@ void			free_map_partial(t_point **map, int index);
 
 // fdf.c
 void			fdf(t_vars *env);
+void			hook(t_vars *env);
 int				close_window_esc(int keycode, t_vars *env);
 int				close_window_x(t_vars *env);
 void			render(t_vars *env, t_point **map);
@@ -111,7 +116,7 @@ void			draw_line_dda(t_vars *env, t_point p1, t_point p2);
 // geometry.c
 void			set_v_coordinates(t_point **map, int max_x, int max_y);
 void			find_min_max_vx_vy(t_point **map, int max_x, int max_y,
-					double *min_max);
+					t_transform *t);
 double			calculate_zoom_ratio(double range_x, double range_y);
 void			apply_transform(t_point **map, int max_x, int max_y,
 					t_transform t);

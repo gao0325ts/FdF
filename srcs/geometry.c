@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 16:21:20 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/28 22:57:45 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/29 11:25:54 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	set_v_coordinates(t_point **map, int max_x, int max_y)
 	}
 }
 
-void	find_min_max_vx_vy(t_point **map, int max_x, int max_y, double *min_max)
+void	find_min_max_vx_vy(t_point **map, int max_x, int max_y, t_transform *t)
 {
 	int	i;
 	int	j;
@@ -46,14 +46,14 @@ void	find_min_max_vx_vy(t_point **map, int max_x, int max_y, double *min_max)
 		j = 0;
 		while (j < max_x)
 		{
-			if (map[i][j].vx > min_max[0])
-				min_max[0] = map[i][j].vx;
-			if (map[i][j].vx < min_max[1])
-				min_max[1] = map[i][j].vx;
-			if (map[i][j].vy > min_max[2])
-				min_max[2] = map[i][j].vy;
-			if (map[i][j].vy < min_max[3])
-				min_max[3] = map[i][j].vy;
+			if (map[i][j].vx > t->max_vx)
+				t->max_vx = map[i][j].vx;
+			if (map[i][j].vx < t->min_vx)
+				t->min_vx = map[i][j].vx;
+			if (map[i][j].vy > t->max_vy)
+				t->max_vy = map[i][j].vy;
+			if (map[i][j].vy < t->min_vy)
+				t->min_vy = map[i][j].vy;
 			j++;
 		}
 		i++;
