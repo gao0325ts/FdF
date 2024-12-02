@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 16:21:20 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/29 23:11:35 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/02 14:21:15 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ void	set_v_coordinates_iso(t_vars *env)
 	int	j;
 
 	i = 0;
-	while (i < env->max_height)
+	while (i < env->height)
 	{
 		j = 0;
-		while (j < env->max_width)
+		while (j < env->width)
 		{
 			env->map[i][j].vx = env->map[i][j].x * (1.0 / sqrt(2))
 				+ env->map[i][j].y * (1.0 / sqrt(2));
@@ -37,17 +37,17 @@ void	set_v_coordinates_iso(t_vars *env)
 	}
 }
 
-void	find_min_max_vx_vy(t_point **map, int max_width, int max_height,
+void	find_min_max_vx_vy(t_point **map, int width, int height,
 		t_transform *t)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (i < max_height)
+	while (i < height)
 	{
 		j = 0;
-		while (j < max_width)
+		while (j < width)
 		{
 			if (map[i][j].vx > t->max_vx)
 				t->max_vx = map[i][j].vx;
@@ -75,17 +75,17 @@ double	calculate_zoom_ratio(double range_x, double range_y)
 	return (ratio);
 }
 
-void	apply_transform(t_point **map, int max_width, int max_height,
+void	apply_transform(t_point **map, int width, int height,
 		t_transform t)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (i < max_height)
+	while (i < height)
 	{
 		j = 0;
-		while (j < max_width)
+		while (j < width)
 		{
 			map[i][j].vx = (map[i][j].vx - t.center_x) * t.zoom_ratio
 				+ (WIN_WIDTH / 2.0);

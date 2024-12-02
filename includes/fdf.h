@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 19:07:05 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/02 13:30:21 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/02 14:45:31 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ typedef struct s_vars
 	int			line_size;
 	int			endian;
 	t_point		**map;
-	int			max_width;
-	int			max_height;
+	int			width;
+	int			height;
 	char		cur_projection;
 	double		z_scale;
 }				t_vars;
@@ -96,17 +96,16 @@ typedef struct s_line
 }				t_line;
 
 // check_map.c
-void			check_map(char *filename, int *max_width, int *max_height);
-int				get_max_value(int fd, int *max_width, int *max_height);
-int				get_max_width(char *line, int *max_width, int is_first_line);
+void			check_map(char *filename, int *width, int *height);
+int				get_max_value(int fd, int *width, int *height);
+int				get_width(char *line, int *width, int is_first_line);
 
 // parse_map.c
-t_point			**parse_map(char *filename, int max_width, int max_height);
-char			**read_map_file(char *filename, int max_height);
-void			set_point_value(t_point *point, char *line, int y,
-					int max_width);
+t_point			**parse_map(char *filename, int width, int height);
+char			**read_map_file(char *filename, int height);
+void			set_point(t_point *point, char *line, int y, int width);
 uint32_t		parse_color(char *s);
-uint32_t		hex_string_to_int(char *s);
+uint32_t		hex_to_int(char *s);
 
 // free.c
 void			free_split(char **strs);
@@ -117,7 +116,7 @@ void			fdf(t_vars *env);
 int				handle_key(int keycode, t_vars *env);
 int				close_window(t_vars *env);
 void			render(t_vars *env, t_point **map);
-void			init_position(t_point **map, int max_width, int max_height);
+void			init_position(t_point **map, int width, int height);
 void			apply_translation(t_vars *env, double offset_x,
 					double offset_y);
 void			apply_zoom(t_vars *env, double zoom_factor);
@@ -131,10 +130,13 @@ void			draw_line_dda(t_vars *env, t_point p1, t_point p2);
 
 // geometry.c
 void			set_v_coordinates_iso(t_vars *env);
-void			find_min_max_vx_vy(t_point **map, int max_width, int max_height,
+void			find_min_max_vx_vy(t_point **map, int width, int height,
 					t_transform *t);
 double			calculate_zoom_ratio(double range_x, double range_y);
-void			apply_transform(t_point **map, int max_width, int max_height,
+void			apply_transform(t_point **map, int width, int height,
 					t_transform t);
+
+// utils.c
+void	safe_close_or_exit(int fd);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:47:11 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/02 13:30:28 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/02 14:21:15 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	fdf(t_vars *env)
 			&(env->endian));
 	env->z_scale = 1.0;
 	set_v_coordinates_iso(env);
-	init_position(env->map, env->max_width, env->max_height);
+	init_position(env->map, env->width, env->height);
 	render(env, env->map);
 	mlx_put_image_to_window(env->mlx, env->win, env->img, 0, 0);
 	mlx_hook(env->win, 2, 1L << 0, handle_key, env);
@@ -29,7 +29,7 @@ void	fdf(t_vars *env)
 	mlx_loop(env->mlx);
 }
 
-void	init_position(t_point **map, int max_width, int max_height)
+void	init_position(t_point **map, int width, int height)
 {
 	t_transform	t;
 
@@ -37,7 +37,7 @@ void	init_position(t_point **map, int max_width, int max_height)
 	t.min_vx = map[0][0].vx;
 	t.max_vy = map[0][0].vy;
 	t.min_vy = map[0][0].vy;
-	find_min_max_vx_vy(map, max_width, max_height, &t);
+	find_min_max_vx_vy(map, width, height, &t);
 	t.range_x = t.max_vx - t.min_vx;
 	t.range_y = t.max_vy - t.min_vy;
 	if (t.range_x == 0 || t.range_y == 0)
@@ -45,7 +45,7 @@ void	init_position(t_point **map, int max_width, int max_height)
 	t.center_x = (t.max_vx + t.min_vx) / 2.0;
 	t.center_y = (t.max_vy + t.min_vy) / 2.0;
 	t.zoom_ratio = calculate_zoom_ratio(t.range_x, t.range_y);
-	apply_transform(map, max_width, max_height, t);
+	apply_transform(map, width, height, t);
 }
 
 void	render(t_vars *env, t_point **map)
@@ -54,15 +54,15 @@ void	render(t_vars *env, t_point **map)
 	int	j;
 
 	i = 0;
-	while (i < env->max_height)
+	while (i < env->height)
 	{
 		j = 0;
-		while (j < env->max_width)
+		while (j < env->width)
 		{
 			my_mlx_pixel_put(env, map[i][j].vx, map[i][j].vy, map[i][j].color);
-			if (i + 1 < env->max_height)
+			if (i + 1 < env->height)
 				draw_line_dda(env, map[i][j], map[i + 1][j]);
-			if (j + 1 < env->max_width)
+			if (j + 1 < env->width)
 				draw_line_dda(env, map[i][j], map[i][j + 1]);
 			j++;
 		}
@@ -75,7 +75,7 @@ int	close_window(t_vars *env)
 	mlx_destroy_image(env->mlx, env->img);
 	mlx_destroy_window(env->mlx, env->win);
 	mlx_destroy_display(env->mlx);
-	free_map_partial(env->map, env->max_height);
+	free_map_partial(env->map, env->height);
 	free(env->mlx);
 	exit(0);
 	return (0);

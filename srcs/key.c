@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:43:43 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/02 13:30:09 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/02 14:21:15 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@ void	apply_rotation_z(t_vars *env, double angle)
 	center_y = WIN_HEIGHT / 2.0;
 	rad_angle = angle * (M_PI / 180.0);
 	i = 0;
-	while (i < env->max_height)
+	while (i < env->height)
 	{
 		j = 0;
-		while (j < env->max_width)
+		while (j < env->width)
 		{
 			temp_vx = env->map[i][j].vx;
 			env->map[i][j].vx = cos(rad_angle) * (env->map[i][j].vx - center_x)
@@ -49,10 +49,10 @@ void	apply_cabinet(t_vars *env, float angle)
 
 	rad = angle * M_PI / 180.0;
 	i = 0;
-	while (i < env->max_height)
+	while (i < env->height)
 	{
 		j = 0;
-		while (j < env->max_width)
+		while (j < env->width)
 		{
 			env->map[i][j].vx = env->map[i][j].x + env->map[i][j].z * 0.5
 				* cos(rad);
@@ -76,7 +76,7 @@ void	change_projection(t_vars *env)
 		set_v_coordinates_iso(env);
 		env->cur_projection = 'i';
 	}
-	init_position(env->map, env->max_width, env->max_height);
+	init_position(env->map, env->width, env->height);
 }
 
 void	apply_flatten(t_vars *env, int keycode)
@@ -90,7 +90,7 @@ void	apply_flatten(t_vars *env, int keycode)
 	else if (env->z_scale > 10.0)
 		env->z_scale = 10.0;
 	set_v_coordinates_iso(env);
-	init_position(env->map, env->max_width, env->max_height);
+	init_position(env->map, env->width, env->height);
 }
 
 int	handle_key(int keycode, t_vars *env)
@@ -134,10 +134,10 @@ void	apply_zoom(t_vars *env, double zoom_factor)
 	center_x = WIN_WIDTH / 2.0;
 	center_y = WIN_HEIGHT / 2.0;
 	i = 0;
-	while (i < env->max_height)
+	while (i < env->height)
 	{
 		j = 0;
-		while (j < env->max_width)
+		while (j < env->width)
 		{
 			env->map[i][j].vx = (env->map[i][j].vx - center_x) * zoom_factor
 				+ center_x;
@@ -155,10 +155,10 @@ void	apply_translation(t_vars *env, double offset_x, double offset_y)
 	int	j;
 
 	i = 0;
-	while (i < env->max_height)
+	while (i < env->height)
 	{
 		j = 0;
-		while (j < env->max_width)
+		while (j < env->width)
 		{
 			env->map[i][j].vx += offset_x;
 			env->map[i][j].vy += offset_y;

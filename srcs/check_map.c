@@ -6,33 +6,33 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 18:02:28 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/29 17:42:32 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/02 14:46:49 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	check_map(char *filename, int *max_width, int *max_height)
+void	check_map(char *filename, int *width, int *height)
 {
 	int	fd;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 	{
-		perror("");
+		perror("Error");
 		exit(1);
 	}
-	*max_width = 0;
-	*max_height = 0;
-	if (get_max_value(fd, max_width, max_height) < 0)
+	*width = 0;
+	*height = 0;
+	if (get_max_value(fd, width, height) == -1)
 	{
-		close(fd);
+		safe_close_or_exit(fd);
 		exit(1);
 	}
-	close(fd);
+	safe_close_or_exit(fd);
 }
 
-int	get_max_value(int fd, int *max_width, int *max_height)
+int	get_max_value(int fd, int *width, int *height)
 {
 	char	*line;
 	int		is_first_line;
@@ -43,10 +43,9 @@ int	get_max_value(int fd, int *max_width, int *max_height)
 		line = get_next_line(fd);
 		if (!line)
 			break ;
-		(*max_height)++;
-		if (get_max_width(line, max_width, is_first_line) < 0)
+		(*height)++;
+		if (get_width(line, width, is_first_line) == -1)
 		{
-			write(2, "Invalid map format\n", 20);
 			free(line);
 			return (-1);
 		}
@@ -55,27 +54,33 @@ int	get_max_value(int fd, int *max_width, int *max_height)
 	}
 	if (is_first_line)
 	{
-		write(2, "Empty file\n", 12);
+		ft_putendl_fd("Error: File is empty", STDERR_FILENO);
 		return (-1);
 	}
 	return (0);
 }
 
-int	get_max_width(char *line, int *max_width, int is_first_line)
+int	get_width(char *line, int *width, int is_first_line)
 {
 	char	**strs;
 	int		i;
 
 	strs = ft_split(line, ' ');
+	if (!strs)
+	{
+		ft_putendl_fd("Error: Memory allocation failed in ft_split", STDERR_FILENO);
+		return (-1);
+	}
 	i = 0;
 	while (strs[i] && strs[i][0] != '\n')
 		i++;
-	if (i == 0 || (!is_first_line && *max_width != i))
+	if (i == 0 || (!is_first_line && *width != i))
 	{
+		ft_putendl_fd("Error: Map width mismatch", STDERR_FILENO);
 		free_split(strs);
 		return (-1);
 	}
-	*max_width = i;
+	*width = i;
 	free_split(strs);
 	return (0);
 }
