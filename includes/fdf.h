@@ -6,15 +6,26 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 19:07:05 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/29 12:35:39 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/02 13:30:21 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_H
 # define FDF_H
 
-# define WIN_WIDTH 1024
-# define WIN_HEIGHT 1024
+# define WIN_WIDTH 1980
+# define WIN_HEIGHT 1080
+# define ESC 65307
+# define SPACE 32
+# define KEY_W 119
+# define KEY_S 115
+# define KEY_A 97
+# define KEY_D 100
+# define KEY_Z 122
+# define KEY_X 120
+# define KEY_R 114
+# define PLUS 65505
+# define MINUS 45
 
 # include "get_next_line.h"
 # include "libft.h"
@@ -37,13 +48,6 @@ typedef struct s_point
 	uint32_t	color;
 }				t_point;
 
-typedef struct s_vector3
-{
-	double		x;
-	double		y;
-	double		z;
-}				t_vector3;
-
 typedef struct s_vars
 {
 	void		*mlx;
@@ -54,16 +58,10 @@ typedef struct s_vars
 	int			line_size;
 	int			endian;
 	t_point		**map;
-	int			max_x;
-	int			max_y;
-	int is_mouse_pressed;     // マウスが押下中か
-	int prev_mouse_x;         // 前フレームのマウスX位置
-	int prev_mouse_y;         // 前フレームのマウスY位置
-	double camera_pitch;      // カメラの上下方向の回転
-	double camera_yaw;        // カメラの左右方向の回転
-	t_vector3 camera_forward; // カメラの前方向
-	t_vector3 camera_right;   // カメラの右方向
-	t_vector3 camera_up;      // カメラの上方向
+	int			max_width;
+	int			max_height;
+	char		cur_projection;
+	double		z_scale;
 }				t_vars;
 
 typedef struct s_transform
@@ -98,14 +96,15 @@ typedef struct s_line
 }				t_line;
 
 // check_map.c
-void			check_map(char *filename, int *max_x, int *max_y);
-int				get_max_value(int fd, int *max_x, int *max_y);
-int				get_max_x(char *line, int *max_x, int is_first_line);
+void			check_map(char *filename, int *max_width, int *max_height);
+int				get_max_value(int fd, int *max_width, int *max_height);
+int				get_max_width(char *line, int *max_width, int is_first_line);
 
 // parse_map.c
-t_point			**parse_map(char *filename, int max_x, int max_y);
-char			**read_map_file(char *filename, int max_y);
-void			set_point_value(t_point *point, char *line, int y, int max_x);
+t_point			**parse_map(char *filename, int max_width, int max_height);
+char			**read_map_file(char *filename, int max_height);
+void			set_point_value(t_point *point, char *line, int y,
+					int max_width);
 uint32_t		parse_color(char *s);
 uint32_t		hex_string_to_int(char *s);
 
@@ -116,10 +115,9 @@ void			free_map_partial(t_point **map, int index);
 // fdf.c
 void			fdf(t_vars *env);
 int				handle_key(int keycode, t_vars *env);
-void			close_window_esc(t_vars *env);
-int				close_window_x(t_vars *env);
+int				close_window(t_vars *env);
 void			render(t_vars *env, t_point **map);
-void			init_position(t_point **map, int max_x, int max_y);
+void			init_position(t_point **map, int max_width, int max_height);
 void			apply_translation(t_vars *env, double offset_x,
 					double offset_y);
 void			apply_zoom(t_vars *env, double zoom_factor);
@@ -132,11 +130,11 @@ void			update_line_and_color(t_line *line, t_color *color);
 void			draw_line_dda(t_vars *env, t_point p1, t_point p2);
 
 // geometry.c
-void			set_v_coordinates(t_point **map, int max_x, int max_y);
-void			find_min_max_vx_vy(t_point **map, int max_x, int max_y,
+void			set_v_coordinates_iso(t_vars *env);
+void			find_min_max_vx_vy(t_point **map, int max_width, int max_height,
 					t_transform *t);
 double			calculate_zoom_ratio(double range_x, double range_y);
-void			apply_transform(t_point **map, int max_x, int max_y,
+void			apply_transform(t_point **map, int max_width, int max_height,
 					t_transform t);
 
 #endif

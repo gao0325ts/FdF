@@ -6,13 +6,13 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 18:02:28 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/28 22:59:40 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/29 17:42:32 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	check_map(char *filename, int *max_x, int *max_y)
+void	check_map(char *filename, int *max_width, int *max_height)
 {
 	int	fd;
 
@@ -22,9 +22,9 @@ void	check_map(char *filename, int *max_x, int *max_y)
 		perror("");
 		exit(1);
 	}
-	*max_x = 0;
-	*max_y = 0;
-	if (get_max_value(fd, max_x, max_y) < 0)
+	*max_width = 0;
+	*max_height = 0;
+	if (get_max_value(fd, max_width, max_height) < 0)
 	{
 		close(fd);
 		exit(1);
@@ -32,7 +32,7 @@ void	check_map(char *filename, int *max_x, int *max_y)
 	close(fd);
 }
 
-int	get_max_value(int fd, int *max_x, int *max_y)
+int	get_max_value(int fd, int *max_width, int *max_height)
 {
 	char	*line;
 	int		is_first_line;
@@ -43,8 +43,8 @@ int	get_max_value(int fd, int *max_x, int *max_y)
 		line = get_next_line(fd);
 		if (!line)
 			break ;
-		(*max_y)++;
-		if (get_max_x(line, max_x, is_first_line) < 0)
+		(*max_height)++;
+		if (get_max_width(line, max_width, is_first_line) < 0)
 		{
 			write(2, "Invalid map format\n", 20);
 			free(line);
@@ -61,7 +61,7 @@ int	get_max_value(int fd, int *max_x, int *max_y)
 	return (0);
 }
 
-int	get_max_x(char *line, int *max_x, int is_first_line)
+int	get_max_width(char *line, int *max_width, int is_first_line)
 {
 	char	**strs;
 	int		i;
@@ -70,12 +70,12 @@ int	get_max_x(char *line, int *max_x, int is_first_line)
 	i = 0;
 	while (strs[i] && strs[i][0] != '\n')
 		i++;
-	if (i == 0 || (!is_first_line && *max_x != i))
+	if (i == 0 || (!is_first_line && *max_width != i))
 	{
 		free_split(strs);
 		return (-1);
 	}
-	*max_x = i;
+	*max_width = i;
 	free_split(strs);
 	return (0);
 }

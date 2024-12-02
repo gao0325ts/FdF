@@ -6,46 +6,46 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:52:28 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/28 22:58:12 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/29 17:42:32 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-t_point	**parse_map(char *filename, int max_x, int max_y)
+t_point	**parse_map(char *filename, int max_width, int max_height)
 {
 	t_point	**map;
 	char	**lines;
 	int		i;
 
-	lines = read_map_file(filename, max_y);
-	map = (t_point **)malloc(sizeof(t_point *) * max_y);
+	lines = read_map_file(filename, max_height);
+	map = (t_point **)malloc(sizeof(t_point *) * max_height);
 	if (!lines || !map)
 		return (NULL);
 	i = 0;
-	while (i < max_y)
+	while (i < max_height)
 	{
-		map[i] = (t_point *)malloc(sizeof(t_point) * max_x);
+		map[i] = (t_point *)malloc(sizeof(t_point) * max_width);
 		if (!map[i])
 		{
 			free_split(lines);
 			free_map_partial(map, i);
 			return (NULL);
 		}
-		set_point_value(map[i], lines[i], i, max_x);
+		set_point_value(map[i], lines[i], i, max_width);
 		i++;
 	}
 	free_split(lines);
 	return (map);
 }
 
-char	**read_map_file(char *filename, int max_y)
+char	**read_map_file(char *filename, int max_height)
 {
 	char	**lines;
 	int		fd;
 	int		i;
 
-	lines = (char **)malloc(sizeof(char *) * (max_y + 1));
+	lines = (char **)malloc(sizeof(char *) * (max_height + 1));
 	if (!lines)
 		return (NULL);
 	fd = open(filename, O_RDONLY);
@@ -56,7 +56,7 @@ char	**read_map_file(char *filename, int max_y)
 		exit(1);
 	}
 	i = 0;
-	while (i <= max_y)
+	while (i <= max_height)
 	{
 		lines[i] = get_next_line(fd);
 		if (!lines[i])
@@ -68,14 +68,14 @@ char	**read_map_file(char *filename, int max_y)
 	return (lines);
 }
 
-void	set_point_value(t_point *point, char *line, int y, int max_x)
+void	set_point_value(t_point *point, char *line, int y, int max_width)
 {
 	char	**strs;
 	int		i;
 
 	strs = ft_split(line, ' ');
 	i = 0;
-	while (i < max_x)
+	while (i < max_width)
 	{
 		point[i].x = i;
 		point[i].y = y;

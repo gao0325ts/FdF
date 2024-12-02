@@ -6,45 +6,48 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 16:21:20 by stakada           #+#    #+#             */
-/*   Updated: 2024/11/29 11:25:54 by stakada          ###   ########.fr       */
+/*   Updated: 2024/11/29 23:11:35 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	set_v_coordinates(t_point **map, int max_x, int max_y)
+void	set_v_coordinates_iso(t_vars *env)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (i < max_y)
+	while (i < env->max_height)
 	{
 		j = 0;
-		while (j < max_x)
+		while (j < env->max_width)
 		{
-			map[i][j].vx = map[i][j].x * (1.0 / sqrt(2)) + map[i][j].y * (1.0
-					/ sqrt(2));
-			map[i][j].vy = -map[i][j].x * (1.0 / sqrt(6)) + map[i][j].y * (1.0
-					/ sqrt(6)) - map[i][j].z * (2.0 / sqrt(6));
-			map[i][j].vz = -(map[i][j].x * (1.0 / sqrt(3))) - map[i][j].y * (1.0
-					/ sqrt(3)) + map[i][j].z * (1.0 / sqrt(3));
+			env->map[i][j].vx = env->map[i][j].x * (1.0 / sqrt(2))
+				+ env->map[i][j].y * (1.0 / sqrt(2));
+			env->map[i][j].vy = -env->map[i][j].x * (1.0 / sqrt(6))
+				+ env->map[i][j].y * (1.0 / sqrt(6)) - env->map[i][j].z
+				* env->z_scale * (2.0 / sqrt(6));
+			env->map[i][j].vz = -(env->map[i][j].x * (1.0 / sqrt(3)))
+				- env->map[i][j].y * (1.0 / sqrt(3)) + env->map[i][j].z
+				* env->z_scale * (1.0 / sqrt(3));
 			j++;
 		}
 		i++;
 	}
 }
 
-void	find_min_max_vx_vy(t_point **map, int max_x, int max_y, t_transform *t)
+void	find_min_max_vx_vy(t_point **map, int max_width, int max_height,
+		t_transform *t)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (i < max_y)
+	while (i < max_height)
 	{
 		j = 0;
-		while (j < max_x)
+		while (j < max_width)
 		{
 			if (map[i][j].vx > t->max_vx)
 				t->max_vx = map[i][j].vx;
@@ -72,16 +75,17 @@ double	calculate_zoom_ratio(double range_x, double range_y)
 	return (ratio);
 }
 
-void	apply_transform(t_point **map, int max_x, int max_y, t_transform t)
+void	apply_transform(t_point **map, int max_width, int max_height,
+		t_transform t)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (i < max_y)
+	while (i < max_height)
 	{
 		j = 0;
-		while (j < max_x)
+		while (j < max_width)
 		{
 			map[i][j].vx = (map[i][j].vx - t.center_x) * t.zoom_ratio
 				+ (WIN_WIDTH / 2.0);
