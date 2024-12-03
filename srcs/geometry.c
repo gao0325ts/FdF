@@ -6,13 +6,13 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 16:21:20 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/02 14:21:15 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/02 16:31:15 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	set_v_coordinates_iso(t_vars *env)
+void	convert_to_iso_coord(t_vars *env)
 {
 	int	i;
 	int	j;
@@ -37,7 +37,7 @@ void	set_v_coordinates_iso(t_vars *env)
 	}
 }
 
-void	find_min_max_vx_vy(t_point **map, int width, int height,
+void	find_bounds(t_point **map, int width, int height,
 		t_transform *t)
 {
 	int	i;

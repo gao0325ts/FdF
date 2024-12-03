@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:47:11 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/02 14:21:15 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/02 16:30:18 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,16 @@ void	fdf(t_vars *env)
 	env->addr = mlx_get_data_addr(env->img, &(env->bpp), &(env->line_size),
 			&(env->endian));
 	env->z_scale = 1.0;
-	set_v_coordinates_iso(env);
-	init_position(env->map, env->width, env->height);
-	render(env, env->map);
+	convert_to_iso_coord(env);
+	init_map_position(env->map, env->width, env->height);
+	render_map(env, env->map);
 	mlx_put_image_to_window(env->mlx, env->win, env->img, 0, 0);
-	mlx_hook(env->win, 2, 1L << 0, handle_key, env);
+	mlx_hook(env->win, 2, 1L << 0, process_key_input, env);
 	mlx_hook(env->win, 17, 1L << 5, close_window, env);
 	mlx_loop(env->mlx);
 }
 
-void	init_position(t_point **map, int width, int height)
+void	init_map_position(t_point **map, int width, int height)
 {
 	t_transform	t;
 
@@ -37,7 +37,7 @@ void	init_position(t_point **map, int width, int height)
 	t.min_vx = map[0][0].vx;
 	t.max_vy = map[0][0].vy;
 	t.min_vy = map[0][0].vy;
-	find_min_max_vx_vy(map, width, height, &t);
+	find_bounds(map, width, height, &t);
 	t.range_x = t.max_vx - t.min_vx;
 	t.range_y = t.max_vy - t.min_vy;
 	if (t.range_x == 0 || t.range_y == 0)
@@ -48,7 +48,7 @@ void	init_position(t_point **map, int width, int height)
 	apply_transform(map, width, height, t);
 }
 
-void	render(t_vars *env, t_point **map)
+void	render_map(t_vars *env, t_point **map)
 {
 	int	i;
 	int	j;

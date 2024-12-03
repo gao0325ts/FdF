@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:52:28 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/02 15:02:07 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/02 16:44:59 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ t_point	**parse_map(char *filename, int width, int height)
 	char	**lines;
 	int		i;
 
-	lines = read_map_file(filename, height);
+	lines = read_map_lines(filename, height);
 	if (!lines)
 		return (NULL);
 	map = (t_point **)malloc(sizeof(t_point *) * height);
@@ -34,7 +34,6 @@ t_point	**parse_map(char *filename, int width, int height)
 			free_map_partial(map, i);
 			return (NULL);
 		}
-		// set_point(map[i], lines[i], i, width);
 		i++;
 	}
 	set_point(map, lines, width, height);
@@ -42,7 +41,7 @@ t_point	**parse_map(char *filename, int width, int height)
 	return (map);
 }
 
-char	**read_map_file(char *filename, int height)
+char	**read_map_lines(char *filename, int height)
 {
 	char	**lines;
 	int		fd;
@@ -56,7 +55,7 @@ char	**read_map_file(char *filename, int height)
 	{
 		perror("Error");
 		free_split(lines);
-		exit(1);
+		return (NULL);
 	}
 	i = 0;
 	while (i <= height)
@@ -71,33 +70,43 @@ char	**read_map_file(char *filename, int height)
 	return (lines);
 }
 
-// void set_point(t_point **map, char **lines, int width, int height)
-
-int	set_point(t_point *point, char *line, int width)
+void	set_point(t_point **map, char **lines, int width, int height)
 {
-	char	**strs;
 	int		i;
+	char	**values;
 
-	strs = ft_split(line, ' ');
-	if (!strs)
+	i = 0;
+	while (i < height)
 	{
-		ft_putendl_fd("Error: Memory allocation failed in ft_split", STDERR_FILENO);
-		return (-1);
+		values = ft_split(lines[i], ' ');
+		if (!values)
+		{
+			free_split(lines);
+			free_map_partial(map, height);
+			exit(1);
+		}
+		set_point_process(map[i], values, i, width);
+		free_split(values);
+		i++;
 	}
+}
+
+void	set_point_process(t_point *point, char **values, int y, int width)
+{
+	int	i;
+
 	i = 0;
 	while (i < width)
 	{
 		point[i].x = i;
 		point[i].y = y;
-		point[i].z = ft_atoi(strs[i]);
-		point[i].color = parse_color(strs[i]);
+		point[i].z = ft_atoi(values[i]);
+		point[i].color = parse_color(values[i]);
 		point[i].vx = 0;
 		point[i].vy = 0;
 		point[i].vz = 0;
 		i++;
 	}
-	free_split(strs);
-	return (0);
 }
 
 uint32_t	parse_color(char *s)
@@ -107,7 +116,7 @@ uint32_t	parse_color(char *s)
 
 	while (*s && *s != ',')
 		s++;
-	if (!*s)
+	if (!*s || !*(s + 1))
 		return (0xFFFFFF);
 	else
 	{
@@ -115,26 +124,4 @@ uint32_t	parse_color(char *s)
 		color = hex_to_int(color_code);
 	}
 	return (color);
-}
-
-uint32_t	hex_to_int(char *s)
-{
-	uint32_t	result;
-	uint32_t	digit;
-
-	result = 0;
-	if (s[0] == '0' && s[1] == 'x')
-		s += 2;
-	while (*s && *s != '\n')
-	{
-		if (*s >= '0' && *s <= '9')
-			digit = *s - '0';
-		else if (*s >= 'a' && *s <= 'f')
-			digit = *s - 'a' + 10;
-		else if (*s >= 'A' && *s <= 'F')
-			digit = *s - 'A' + 10;
-		result = (result << 4) | digit;
-		s++;
-	}
-	return (result);
 }

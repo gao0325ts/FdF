@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 18:02:28 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/02 14:46:49 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/02 15:35:45 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,7 @@ int	get_width(char *line, int *width, int is_first_line)
 
 	strs = ft_split(line, ' ');
 	if (!strs)
-	{
-		ft_putendl_fd("Error: Memory allocation failed in ft_split", STDERR_FILENO);
 		return (-1);
-	}
 	i = 0;
 	while (strs[i] && strs[i][0] != '\n')
 		i++;
