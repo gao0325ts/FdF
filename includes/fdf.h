@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 19:07:05 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/02 16:49:29 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/04 17:17:35 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,14 +101,14 @@ typedef struct s_line
 
 // check_map.c
 void			check_map(char *filename, int *width, int *height);
-int				get_max_value(int fd, int *width, int *height);
-int				get_width(char *line, int *width, int is_first_line);
+int				get_map_size(int fd, int *width, int *height);
+int				get_map_width(char *line, int *width, int is_first_line);
 
 // parse_map.c
 t_point			**parse_map(char *filename, int width, int height);
 char			**read_map_lines(char *filename, int height);
 void			set_point(t_point **map, char **lines, int width, int height);
-void			set_point_process(t_point *point, char **values, int y,
+void			set_point_process(t_point *map_line, char **values, int y,
 					int width);
 uint32_t		parse_color(char *s);
 
@@ -145,8 +145,6 @@ void			adjust_map_flatness(t_vars *env, int keycode);
 void			update_z_influence(t_vars *env);
 void			translate_map(t_vars *env, double offset_x, double offset_y);
 void			zoom_map(t_vars *env, double zoom_factor);
-
-// 
 
 // utils.c
 void			safe_close_or_exit(int fd);

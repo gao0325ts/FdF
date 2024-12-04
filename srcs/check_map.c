@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 18:02:28 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/02 15:35:45 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/04 16:56:50 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	check_map(char *filename, int *width, int *height)
 	}
 	*width = 0;
 	*height = 0;
-	if (get_max_value(fd, width, height) == -1)
+	if (get_map_size(fd, width, height) == -1)
 	{
 		safe_close_or_exit(fd);
 		exit(1);
@@ -32,7 +32,7 @@ void	check_map(char *filename, int *width, int *height)
 	safe_close_or_exit(fd);
 }
 
-int	get_max_value(int fd, int *width, int *height)
+int	get_map_size(int fd, int *width, int *height)
 {
 	char	*line;
 	int		is_first_line;
@@ -44,7 +44,7 @@ int	get_max_value(int fd, int *width, int *height)
 		if (!line)
 			break ;
 		(*height)++;
-		if (get_width(line, width, is_first_line) == -1)
+		if (get_map_width(line, width, is_first_line) == -1)
 		{
 			free(line);
 			return (-1);
@@ -60,7 +60,7 @@ int	get_max_value(int fd, int *width, int *height)
 	return (0);
 }
 
-int	get_width(char *line, int *width, int is_first_line)
+int	get_map_width(char *line, int *width, int is_first_line)
 {
 	char	**strs;
 	int		i;

@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:52:28 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/02 16:44:59 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/04 17:19:29 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,9 @@ char	**read_map_lines(char *filename, int height)
 		return (NULL);
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
-	{
-		perror("Error");
-		free_split(lines);
-		return (NULL);
-	}
+		return (perror("Error"), free(lines), NULL);
 	i = 0;
-	while (i <= height)
+	while (i < height)
 	{
 		lines[i] = get_next_line(fd);
 		if (!lines[i])
@@ -66,6 +62,8 @@ char	**read_map_lines(char *filename, int height)
 		i++;
 	}
 	lines[i] = NULL;
+	if (i != height)
+		return (free_split(lines), NULL);
 	safe_close_or_exit(fd);
 	return (lines);
 }
@@ -91,20 +89,20 @@ void	set_point(t_point **map, char **lines, int width, int height)
 	}
 }
 
-void	set_point_process(t_point *point, char **values, int y, int width)
+void	set_point_process(t_point *map_line, char **values, int y, int width)
 {
 	int	i;
 
 	i = 0;
 	while (i < width)
 	{
-		point[i].x = i;
-		point[i].y = y;
-		point[i].z = ft_atoi(values[i]);
-		point[i].color = parse_color(values[i]);
-		point[i].vx = 0;
-		point[i].vy = 0;
-		point[i].vz = 0;
+		map_line[i].x = i;
+		map_line[i].y = y;
+		map_line[i].z = ft_atoi(values[i]);
+		map_line[i].color = parse_color(values[i]);
+		map_line[i].vx = 0;
+		map_line[i].vy = 0;
+		map_line[i].vz = 0;
 		i++;
 	}
 }
