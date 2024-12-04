@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 15:46:54 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/04 22:21:18 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/04 22:23:21 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ int	process_key_input(int keycode, t_vars *env)
 
 void	handle_key_action(int keycode, t_vars *env)
 {
-	if (keycode == XK_plus || keycode == XK_equal)
+	if (keycode == XK_z)
 		zoom_map(env, 1.1);
-	else if (keycode == XK_minus)
+	else if (keycode == XK_x)
 		zoom_map(env, 0.9);
 	else if (keycode == XK_Left)
 		translate_map(env, -10, 0);
