@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 16:43:52 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/04 22:16:26 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/04 22:32:09 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	toggle_projection(t_vars *env)
 {
 	if (env->cur_projection == 'i')
 	{
-		convert_to_parallel_coord(env, 45.0);
+		convert_to_parallel_coord(env, P_ANGLE);
 		env->cur_projection = 'p';
 	}
 	else
