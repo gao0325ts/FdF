@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:47:11 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/02 16:30:18 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/04 21:57:24 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,10 @@ void	fdf(t_vars *env)
 	env->addr = mlx_get_data_addr(env->img, &(env->bpp), &(env->line_size),
 			&(env->endian));
 	env->z_scale = 1.0;
+	env->cur_projection = 'i';
 	convert_to_iso_coord(env);
 	init_map_position(env->map, env->width, env->height);
-	render_map(env, env->map);
+	render_map(env, env->map, env->width, env->height);
 	mlx_put_image_to_window(env->mlx, env->win, env->img, 0, 0);
 	mlx_hook(env->win, 2, 1L << 0, process_key_input, env);
 	mlx_hook(env->win, 17, 1L << 5, close_window, env);
@@ -48,21 +49,21 @@ void	init_map_position(t_point **map, int width, int height)
 	apply_transform(map, width, height, t);
 }
 
-void	render_map(t_vars *env, t_point **map)
+void	render_map(t_vars *env, t_point **map, int width, int height)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (i < env->height)
+	while (i < height)
 	{
 		j = 0;
-		while (j < env->width)
+		while (j < width)
 		{
 			my_mlx_pixel_put(env, map[i][j].vx, map[i][j].vy, map[i][j].color);
-			if (i + 1 < env->height)
+			if (i + 1 < height)
 				draw_line_dda(env, map[i][j], map[i + 1][j]);
-			if (j + 1 < env->width)
+			if (j + 1 < width)
 				draw_line_dda(env, map[i][j], map[i][j + 1]);
 			j++;
 		}

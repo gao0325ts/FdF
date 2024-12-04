@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 19:06:22 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/02 15:38:44 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/04 21:04:26 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	main(int ac, char **av)
 
 	if (ac != 2)
 	{
-		ft_putendl_fd("Error: Invalid argument", STDERR_FILENO);
+		ft_putendl_fd("Usage: ./fdf <filename>", STDERR_FILENO);
 		return (1);
 	}
 	check_map(av[1], &env.width, &env.height);
