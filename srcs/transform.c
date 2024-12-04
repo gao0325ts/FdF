@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 16:43:52 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/04 21:47:36 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/04 22:16:26 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	convert_to_parallel_coord(t_vars *env, double angle)
 
 void	adjust_map_flatness(t_vars *env, int keycode)
 {
-	if (keycode == KEY_I)
+	if (keycode == XK_w)
 		env->z_scale += 0.1;
 	else
 		env->z_scale -= 0.1;

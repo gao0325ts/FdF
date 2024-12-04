@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 15:46:54 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/04 21:47:16 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/04 22:16:34 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,24 +24,26 @@ int	process_key_input(int keycode, t_vars *env)
 
 void	handle_key_action(int keycode, t_vars *env)
 {
-	if (keycode == KEY_Z)
+	if (keycode == XK_plus)
 		zoom_map(env, 1.1);
-	else if (keycode == KEY_X)
+	else if (keycode == XK_minus)
 		zoom_map(env, 0.9);
-	else if (keycode == KEY_A)
+	else if (keycode == XK_Left)
 		translate_map(env, -10, 0);
-	else if (keycode == KEY_D)
+	else if (keycode == XK_Right)
 		translate_map(env, 10, 0);
-	else if (keycode == KEY_W)
+	else if (keycode == XK_Up)
 		translate_map(env, 0, -10);
-	else if (keycode == KEY_S)
+	else if (keycode == XK_Down)
 		translate_map(env, 0, 10);
-	else if (keycode == KEY_R)
+	else if (keycode == XK_d)
 		rotate_z_axis(env, 10);
-	else if (keycode == KEY_I || keycode == KEY_U)
+	else if (keycode == XK_a)
+		rotate_z_axis(env, -10);
+	else if (keycode == XK_w || keycode == XK_s)
 		adjust_map_flatness(env, keycode);
-	else if (keycode == SPACE)
+	else if (keycode == XK_space)
 		toggle_projection(env);
-	else if (keycode == ESC)
+	else if (keycode == XK_Escape)
 		close_window(env);
 }

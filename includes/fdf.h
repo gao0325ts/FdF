@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 19:07:05 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/04 21:59:24 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/04 22:12:40 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,6 @@
 # define WIN_WIDTH 1920
 # define WIN_HEIGHT 1080
 # define P_ANGLE 45.0
-# define Z_ANGLE 10.0
-# define ESC 65307
-# define SPACE 32
-# define KEY_W 119
-# define KEY_S 115
-# define KEY_A 97
-# define KEY_D 100
-# define ALLOW_UP 65362
-# define ALLOW_DOWN 65364
-# define ALLOW_LEFT 65361
-# define ALLOW_RIGHT 65363
-# define KEY_Z 122
-# define KEY_X 120
-# define KEY_R 114
-# define KEY_I 117
-# define KEY_U 105
-# define PLUS 65505
-# define MINUS 45
 
 # include "get_next_line.h"
 # include "libft.h"
@@ -44,6 +26,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
+# include <X11/keysym.h>
 
 typedef struct s_point
 {
