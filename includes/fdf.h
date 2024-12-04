@@ -6,7 +6,7 @@
 /*   By: stakada <stakada@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 19:07:05 by stakada           #+#    #+#             */
-/*   Updated: 2024/12/04 22:12:40 by stakada          ###   ########.fr       */
+/*   Updated: 2024/12/04 22:18:57 by stakada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 
 # include "get_next_line.h"
 # include "libft.h"
+# include <X11/keysym.h>
 # include <fcntl.h>
 # include <math.h>
 # include <mlx.h>
@@ -26,7 +27,6 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
-# include <X11/keysym.h>
 
 typedef struct s_point
 {
